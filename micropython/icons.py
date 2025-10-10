@@ -214,3 +214,51 @@ def humiditySymbol(display,x,y):
     display.pixel(x+9,y+11)
     display.pixel(x+10,y+11)
 
+def batterySymbol(display, x, y, fill_level):
+    """
+    Draw a battery icon with fill level
+    fill_level: 0-4 (0=empty, 4=full)
+    Battery dimensions: 18x10 pixels
+    """
+    # Battery body outline - 10 pixels tall
+    display.rect(x, y, 16, 10, 0xffff)
+    
+    # Battery tip/terminal - centered vertically
+    display.rect(x+16, y+3, 2, 4, 0xffff)
+    
+    # Fill battery based on level (each segment is 3 pixels wide and 6 pixels tall)
+    if fill_level >= 1:
+        display.fill_rect(x+2, y+2, 3, 6, 0xffff)  # First segment
+    if fill_level >= 2:
+        display.fill_rect(x+5, y+2, 3, 6, 0xffff)  # Second segment
+    if fill_level >= 3:
+        display.fill_rect(x+8, y+2, 3, 6, 0xffff)  # Third segment
+    if fill_level >= 4:
+        display.fill_rect(x+11, y+2, 3, 6, 0xffff)  # Fourth segment (full)
+
+def getBatteryLevel(voltage):
+    """
+    Convert voltage (in millivolts) to battery fill level (0-4)
+    Typical Li-ion/LiPo voltage range: 3.0V (empty) to 4.2V (full)
+    """
+    voltage_mv = voltage
+    
+    # Convert to volts if needed
+    if voltage_mv > 1000:  # Assume it's in millivolts
+        voltage_v = voltage_mv / 1000.0
+    else:
+        voltage_v = voltage_mv
+    
+    # Battery voltage thresholds
+    if voltage_v >= 4.0:
+        return 4  # Full
+    elif voltage_v >= 3.7:
+        return 3  # Good
+    elif voltage_v >= 3.4:
+        return 2  # Medium
+    elif voltage_v >= 3.1:
+        return 1  # Low
+    else:
+        return 0  # Empty/Critical
+
+

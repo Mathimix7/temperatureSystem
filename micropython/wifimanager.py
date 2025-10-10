@@ -50,9 +50,10 @@ class WifiManager:
                 password = profiles[ssid]
                 if self.__WifiConnect(ssid, password):
                     return
-        self.display.fill(0)
-        self.display.printstring(0,5,f"Starting wifi config:", REFSAN12)
-        self.display.show()
+        if self.display:
+            self.display.fill(0)
+            self.display.printstring(0,5,f"Starting wifi config:", REFSAN12)
+            self.display.show()
         print('Could not connect to any WiFi network. Starting the configuration portal...')
         self.__WebServer()
         
@@ -94,9 +95,10 @@ class WifiManager:
 
     def __WifiConnect(self, ssid, password):
         print('Trying to connect to:', ssid)
-        self.display.fill(0)
-        self.display.printstring(0,5,f"Connecting to \n{ssid}...", REFSAN12)
-        self.display.show()
+        if self.display:
+            self.display.fill(0)
+            self.display.printstring(0,5,f"Connecting to \n{ssid}...", REFSAN12)
+            self.display.show()
         self.wlan_sta.active(False)
         self.wlan_sta.active(True)
         self.wlan_sta.disconnect()
@@ -104,17 +106,19 @@ class WifiManager:
         for _ in range(100):
             if self.wlan_sta.isconnected():
                 print('\nConnected! Network information:', self.wlan_sta.ifconfig())
-                self.display.fill(0)
-                self.display.printstring(0,5,f"Connected!", REFSAN12)
-                self.display.show()
+                if self.display:
+                    self.display.fill(0)
+                    self.display.printstring(0,5,f"Connected!", REFSAN12)
+                    self.display.show()
                 return True
             else:
                 print('.', end='')
                 utime.sleep_ms(100)
         print('\nConnection failed!')
-        self.display.fill(0)
-        self.display.printstring(0,5,f"Connection failed!", REFSAN12)
-        self.display.show()
+        if self.display:
+            self.display.fill(0)
+            self.display.printstring(0,5,f"Connection failed!", REFSAN12)
+            self.display.show()
         self.wlan_sta.disconnect()
         return False
 
@@ -134,8 +138,9 @@ class WifiManager:
           "setupwifi.py" : "192.168.4.1" } ) :
           ip = "setupwifi.py"
         print('Connect to', self.ap_ssid, 'with the password', self.ap_password, 'and access the captive portal at', ip)
-        self.display.printstring(0,25,f"SSID: {self.ap_ssid}\nPASS: {self.ap_password}\nIP: {ip}", REFSAN12)
-        self.display.show()
+        if self.display:
+            self.display.printstring(0,25,f"SSID: {self.ap_ssid}\nPASS: {self.ap_password}\nIP: {ip}", REFSAN12)
+            self.display.show()
         while True:
             if self.wlan_sta.isconnected():
                 self.wlan_ap.active(False)
